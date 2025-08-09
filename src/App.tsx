@@ -8,7 +8,7 @@ import AdminRoute from './pages/Auth/components/AdminRoute.tsx';
 function App() {
 
   return (
-    <Router basename="/Casa-Suiza-Web">
+    <Router basename="/web">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
