@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "https://backend-web-t0x2.onrender.com";
+  import.meta.env.VITE_API_BASE_URL || "https://backend-web-t0x2.onrender.com/api/v1";
 
 export const api = axios.create({
   baseURL: API_BASE,
