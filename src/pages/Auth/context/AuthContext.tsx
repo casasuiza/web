@@ -21,12 +21,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth() {
+export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error('useAuth debe usarse dentro de un AuthProvider');
     return context;
-}
+};
 
 interface AuthProviderProps {
     children: ReactNode;

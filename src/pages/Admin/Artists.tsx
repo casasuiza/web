@@ -139,6 +139,8 @@ const Artists: React.FC = () => {
 
       {showDeleteModal && (
         <ConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
           title="Eliminar Artista"
           message={`¿Estás seguro de que quieres eliminar a ${artistToDelete?.name}?`}
           onConfirm={confirmDelete}

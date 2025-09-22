@@ -158,6 +158,8 @@ const Coupons: React.FC = () => {
 
       {showDeleteModal && (
         <ConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
           title="Eliminar Cupón"
           message={`¿Estás seguro de que quieres eliminar el cupón ${couponToDelete?.code}?`}
           onConfirm={confirmDelete}

@@ -2,6 +2,7 @@ interface ConfirmationModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    onCancel?: () => void;
     message: string;
     title?: string;
 }
@@ -10,6 +11,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     isOpen,
     onClose,
     onConfirm,
+    onCancel,
     message,
     title = "Confirmar Acción",
 }) => {
@@ -22,7 +24,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 <p className="text-sm text-gray-700 mb-6">{message}</p>
                 <div className="flex justify-end gap-3">
                     <button
-                        onClick={onClose}
+                        onClick={onCancel || onClose}
                         className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
                     >
                         Cancelar
