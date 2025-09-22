@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { canAccessAdmin } from '../../api/permissions';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,11 +23,11 @@ export default function Login() {
       if (loginSuccess) {
         setTimeout(() => {
           const userData = JSON.parse(localStorage.getItem('user') || '{}');
-          if (userData.rol?.toLowerCase() === 'admin') {
+          const userRole = userData.role || userData.rol;
+          if (canAccessAdmin(userRole)) {
             navigate('/admin');
           } else {
-            setError('Acceso denegado: Solo administradores pueden acceder');
-            logout();
+            navigate('/');
           }
         }, 100);
       } else {

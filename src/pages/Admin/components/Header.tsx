@@ -1,5 +1,7 @@
 import React from 'react';
 import { Menu } from 'lucide-react';
+import { useAuth } from '../../Auth/context/AuthContext';
+import { getRoleBadgeColor, getRoleIcon, roleLabels, type UserRole } from '../../../api/permissions';
 
 interface HeaderProps {
     activeTab: string;
@@ -7,6 +9,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ activeTab, onMenuClick }) => {
+    const { user } = useAuth();
     const getTitle = (tab: string) => {
         switch (tab) {
             case 'dashboard':
@@ -23,6 +26,14 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onMenuClick }) => {
                 return 'Reportes';
             case 'categories':
                 return 'Categorías';
+            case 'artists':
+                return 'Artistas';
+            case 'coupons':
+                return 'Cupones';
+            case 'qr-scanner':
+                return 'Scanner QR';
+            case 'tickets':
+                return 'Tickets';
             default:
                 return 'Dashboard';
         }
@@ -54,6 +65,22 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onMenuClick }) => {
                             day: 'numeric'
                         })}
                     </span>
+                    
+                    <div className="flex items-center space-x-3">
+                        <div className="text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getRoleBadgeColor(user?.role || user?.rol)}`}>
+                                    {getRoleIcon(user?.role || user?.rol)} {roleLabels[(user?.role || user?.rol)?.toUpperCase() as UserRole] || 'Usuario'}
+                                </span>
+                            </div>
+                            <p className="text-xs text-gray-500">{user?.username || 'Usuario'}</p>
+                        </div>
+                        <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-medium">
+                                {user?.username?.charAt(0).toUpperCase() || 'U'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>

@@ -9,6 +9,9 @@ import Tickets from './components/Tickets';
 import Settings from './components/Settings';
 import Reports from './components/Reports';
 import CategoryManagement from './components/CategoryManagement';
+import Artists from './Artists';
+import Coupons from './Coupons';
+import QRScanner from './QRScanner';
 
 const Admin: React.FC = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -38,6 +41,12 @@ const Admin: React.FC = () => {
                 />
             case 'categories':
                 return <CategoryManagement setActiveTab={setActiveTab} />;
+            case 'artists':
+                return <Artists />;
+            case 'coupons':
+                return <Coupons />;
+            case 'qr-scanner':
+                return <QRScanner />;
             case 'users':
                 return <Users />;
             case 'tickets':

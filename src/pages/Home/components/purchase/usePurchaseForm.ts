@@ -12,6 +12,7 @@ export function usePurchaseForm() {
   const [buyerDni, setBuyerDni] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
 
   const validateField = (field: string, value: string) => {
     const errors = { ...fieldErrors };
@@ -100,6 +101,7 @@ export function usePurchaseForm() {
     setBuyerDni("");
     setQuantity(1);
     setFieldErrors({});
+    setAppliedCoupon(null);
   };
 
   return {
@@ -121,5 +123,7 @@ export function usePurchaseForm() {
     validateField,
     validateAllFields,
     resetForm,
+    appliedCoupon,
+    setAppliedCoupon,
   };
 }
