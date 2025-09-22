@@ -6,7 +6,8 @@ import { login as loginApi, register as registerApi } from '../../../api/auth';
 interface User {
     id: string;
     username: string;
-    rol: string;
+    role: string;
+    rol?: string; // Backward compatibility
 }
 
 interface AuthContextType {
@@ -34,7 +35,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<User | null>(null);
-    const isAdmin = user?.rol?.toLowerCase() === 'admin';
+    const isAdmin = (user?.role || user?.rol)?.toLowerCase() === 'admin';
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -47,6 +48,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const login = async (username: string, password: string): Promise<boolean> => {
         try {
+            // Limpiar sesión anterior antes de intentar login
+            logout();
+            
             const response = await loginApi(username, password);
             if (response.status === 200 && response.data.token) {
                 localStorage.setItem('token', response.data.token);

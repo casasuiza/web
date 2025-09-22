@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, User, Mail, Shield } from 'lucide-react';
+import { roleLabels, getRoleBadgeColor, getRoleIcon, type UserRole } from '../../../api/permissions';
 
 interface User {
     id: string;
@@ -102,9 +103,19 @@ export default function UserModal({ isOpen, onClose, onSave, user, title }: User
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                         >
-                            <option value="USER">Usuario</option>
-                            <option value="ADMIN">Administrador</option>
+                            {Object.entries(roleLabels).map(([role, label]) => (
+                                <option key={role} value={role}>
+                                    {getRoleIcon(role)} {label}
+                                </option>
+                            ))}
                         </select>
+                        {formData.role && (
+                            <div className="mt-2">
+                                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getRoleBadgeColor(formData.role)}`}>
+                                    {getRoleIcon(formData.role)} {roleLabels[formData.role as UserRole]}
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     {!user && (

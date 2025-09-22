@@ -1,4 +1,6 @@
-import { User, Mail, Phone, CreditCard, ShoppingCart, AlertCircle } from "lucide-react";
+import { User, Mail, Phone, CreditCard, ShoppingCart, AlertCircle, Tag } from "lucide-react";
+import { useState } from "react";
+import { validateCoupon } from "../../../../api/coupons";
 
 interface PurchaseFormProps {
     buyerName: string;
@@ -12,6 +14,9 @@ interface PurchaseFormProps {
     handleInputChange: (field: string, value: string) => void;
     setQuantity: (quantity: number) => void;
     error: string | null;
+    eventId: string;
+    appliedCoupon?: any;
+    onCouponApplied: (coupon: any) => void;
 }
 
 export function PurchaseForm({
@@ -26,8 +31,20 @@ export function PurchaseForm({
     handleInputChange,
     setQuantity,
     error,
+    eventId,
+    appliedCoupon,
+    onCouponApplied,
 }: PurchaseFormProps) {
-    const total = ticketPrice * quantity;
+    const [couponCode, setCouponCode] = useState('');
+    const [couponLoading, setCouponLoading] = useState(false);
+    const [couponError, setCouponError] = useState('');
+
+    const subtotal = ticketPrice * quantity;
+    const discount = appliedCoupon ? 
+        (appliedCoupon.isPercentage ? 
+            subtotal * (appliedCoupon.discount / 100) : 
+            appliedCoupon.discount) : 0;
+    const total = subtotal - discount;
 
     return (
         <>
@@ -143,6 +160,68 @@ export function PurchaseForm({
                 </div>
             </div>
 
+            {/* Cupón de descuento */}
+            <div className="bg-blue-50 p-4 rounded-lg mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Tag size={16} className="inline mr-1" />
+                    Cupón de descuento
+                </label>
+                {!appliedCoupon ? (
+                    <div className="flex space-x-2">
+                        <input
+                            type="text"
+                            placeholder="Ingresa tu código"
+                            className="flex-1 border-2 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                            value={couponCode}
+                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        />
+                        <button
+                            type="button"
+                            onClick={async () => {
+                                if (!couponCode.trim()) return;
+                                setCouponLoading(true);
+                                setCouponError('');
+                                try {
+                                    const coupon = await validateCoupon(couponCode, eventId);
+                                    onCouponApplied(coupon);
+                                    setCouponCode('');
+                                } catch (error: any) {
+                                    setCouponError(error.response?.data?.message || 'Cupón inválido');
+                                } finally {
+                                    setCouponLoading(false);
+                                }
+                            }}
+                            disabled={couponLoading || !couponCode.trim()}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            {couponLoading ? 'Validando...' : 'Aplicar'}
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-between bg-green-100 p-3 rounded-lg">
+                        <div>
+                            <span className="font-medium text-green-800">{appliedCoupon.code}</span>
+                            <span className="text-green-600 ml-2">
+                                -{appliedCoupon.isPercentage ? `${appliedCoupon.discount}%` : `$${appliedCoupon.discount}`}
+                            </span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => onCouponApplied(null)}
+                            className="text-red-600 hover:text-red-800"
+                        >
+                            Quitar
+                        </button>
+                    </div>
+                )}
+                {couponError && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                        <AlertCircle size={12} className="mr-1" />
+                        {couponError}
+                    </p>
+                )}
+            </div>
+
             {/* Cantidad y precio */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
                 <div className="flex justify-between items-center mb-3">
@@ -172,6 +251,16 @@ export function PurchaseForm({
                     <span>Precio por entrada:</span>
                     <span>${ticketPrice.toLocaleString()}</span>
                 </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                    <span>Subtotal:</span>
+                    <span>${subtotal.toLocaleString()}</span>
+                </div>
+                {appliedCoupon && (
+                    <div className="flex justify-between text-sm text-green-600">
+                        <span>Descuento ({appliedCoupon.code}):</span>
+                        <span>-${discount.toLocaleString()}</span>
+                    </div>
+                )}
                 <div className="flex justify-between text-sm text-gray-600">
                     <span>Costo de Servicio:</span>
                     <span>${(total * 0.1).toLocaleString()}</span>

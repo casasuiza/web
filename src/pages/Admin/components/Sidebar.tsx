@@ -1,7 +1,9 @@
 import React from 'react';
-import { Plus, Ticket, Users, Calendar, BarChart3, Settings, LogOut, X, BookIcon, Tag } from 'lucide-react';
+import { Plus, Ticket, Users, Calendar, BarChart3, Settings, LogOut, X, BookIcon, Tag, Music, Percent, QrCode } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../api/auth';
+import { useAuth } from '../../Auth/context/AuthContext';
+import { hasPermission, getRoleBadgeColor, getRoleIcon, roleLabels, type UserRole } from '../../../api/permissions';
 
 interface SidebarProps {
     activeTab: string;
@@ -11,16 +13,25 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onClose }) => {
-    const menuItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-        { id: 'events', label: 'Eventos', icon: Calendar },
-        { id: 'add-event', label: 'Agregar Evento', icon: Plus },
-        { id: 'categories', label: 'Gestionar Categorías', icon: Tag },
-        { id: 'reports', label: 'Reportes', icon: BookIcon },
-        { id: 'users', label: 'Usuarios', icon: Users },
-        { id: 'tickets', label: 'Tickets', icon: Ticket },
-        { id: 'settings', label: 'Configuración', icon: Settings },
+    const { user } = useAuth();
+    
+    const allMenuItems = [
+        { id: 'dashboard', label: 'Dashboard', icon: BarChart3, permission: 'dashboard' as const },
+        { id: 'events', label: 'Eventos', icon: Calendar, permission: 'events' as const },
+        { id: 'add-event', label: 'Agregar Evento', icon: Plus, permission: 'addEvent' as const },
+        { id: 'categories', label: 'Gestionar Categorías', icon: Tag, permission: 'categories' as const },
+        { id: 'artists', label: 'Artistas', icon: Music, permission: 'artists' as const },
+        { id: 'coupons', label: 'Cupones', icon: Percent, permission: 'coupons' as const },
+        { id: 'qr-scanner', label: 'Scanner QR', icon: QrCode, permission: 'qrScanner' as const },
+        { id: 'reports', label: 'Reportes', icon: BookIcon, permission: 'reports' as const },
+        { id: 'users', label: 'Usuarios', icon: Users, permission: 'users' as const },
+        { id: 'tickets', label: 'Tickets', icon: Ticket, permission: 'tickets' as const },
+        { id: 'settings', label: 'Configuración', icon: Settings, permission: 'settings' as const },
     ];
+
+    const menuItems = allMenuItems.filter(item => 
+        hasPermission(user?.role || user?.rol, item.permission)
+    );
 
     const handleMenuItemClick = (tabId: string) => {
         setActiveTab(tabId);
@@ -52,18 +63,23 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onCl
   flex flex-col
 `}>
                 {/* Header del sidebar */}
-                <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-                    <div>
+                <div className="p-6 border-b border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
                         <h2 className="text-2xl font-bold text-gray-800">Casa Suiza</h2>
-                        <p className="text-sm text-gray-600">Panel de Administración</p>
+                        {/* Botón cerrar para móvil */}
+                        <button
+                            onClick={onClose}
+                            className="lg:hidden p-2 text-gray-500 hover:text-gray-700"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
-                    {/* Botón cerrar para móvil */}
-                    <button
-                        onClick={onClose}
-                        className="lg:hidden p-2 text-gray-500 hover:text-gray-700"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
+                    <p className="text-sm text-gray-600 mb-2">Panel de Administración</p>
+                    <div className="flex items-center space-x-2">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getRoleBadgeColor(user?.role || user?.rol)}`}>
+                            {getRoleIcon(user?.role || user?.rol)} {roleLabels[(user?.role || user?.rol)?.toUpperCase() as UserRole] || 'Usuario'}
+                        </span>
+                    </div>
                 </div>
 
                 {/* Menú de navegación */}

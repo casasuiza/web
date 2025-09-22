@@ -36,6 +36,7 @@ export default function PurchaseModal({
     const {
         buyerName, buyerLastName, buyerEmail, buyerPhone, buyerDni, quantity,
         setQuantity, fieldErrors, handleInputChange, validateAllFields, resetForm,
+        appliedCoupon, setAppliedCoupon,
     } = usePurchaseForm();
 
     const [step, setStep] = useState<'form' | 'payment' | 'success'>('form');
@@ -111,7 +112,7 @@ export default function PurchaseModal({
 
             const { preferenceId: newPreferenceId } = await createPaymentPreference({
                 orderId: order.id,
-                amount: (ticketPrice * quantity) + (ticketPrice * quantity * 0.1),
+                amount: totalAmount,
                 buyerName: buyerName,
                 buyerLastName: buyerLastName,
                 buyerEmail: buyerEmail,
@@ -307,7 +308,13 @@ export default function PurchaseModal({
 
     if (!isOpen) return null;
 
-    const totalAmount = (ticketPrice * quantity) + (ticketPrice * quantity * 0.1);
+    const subtotal = ticketPrice * quantity;
+    const discount = appliedCoupon ? 
+        (appliedCoupon.isPercentage ? 
+            subtotal * (appliedCoupon.discount / 100) : 
+            appliedCoupon.discount) : 0;
+    const discountedTotal = subtotal - discount;
+    const totalAmount = discountedTotal + (discountedTotal * 0.1);
 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-50 p-4">
@@ -344,6 +351,9 @@ export default function PurchaseModal({
                                 handleInputChange={handleInputChange}
                                 setQuantity={setQuantity}
                                 error={error}
+                                eventId={eventId}
+                                appliedCoupon={appliedCoupon}
+                                onCouponApplied={setAppliedCoupon}
                             />
                             <div className="flex gap-3">
                                 <button

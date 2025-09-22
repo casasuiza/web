@@ -10,6 +10,7 @@ interface User {
     isActive: boolean;
     role: string;
     createdAt: string;
+    lastLogin?: string;
 }
 
 interface UserCardProps {
@@ -20,6 +21,8 @@ interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, onContact }) => {
+    console.log(user);
+
     const getStatusColor = (status: string) => {
         return status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
     };
@@ -59,6 +62,17 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, onContact }
                         <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-gray-400" />
                             <span className="font-medium">Registro:</span> {new Date(user.createdAt).toLocaleDateString()}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <UserCheck className="w-4 h-4 text-green-400" />
+                            <span className="font-medium">Última conexión:</span> 
+                            {user.lastLogin ? (
+                                <span className="text-xs">
+                                    {new Date(user.lastLogin).toLocaleDateString()} {new Date(user.lastLogin).toLocaleTimeString()}
+                                </span>
+                            ) : (
+                                <span className="text-xs text-gray-400">Nunca</span>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Mail className="w-4 h-4 text-gray-400" />
