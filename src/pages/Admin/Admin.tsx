@@ -12,6 +12,8 @@ import CategoryManagement from './components/CategoryManagement';
 import Artists from './Artists';
 import Coupons from './Coupons';
 import QRScanner from './QRScanner';
+import Service from './Service';
+import Kitchen from './Kitchen';
 
 const Admin: React.FC = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -45,6 +47,10 @@ const Admin: React.FC = () => {
                 return <Artists />;
             case 'coupons':
                 return <Coupons />;
+            case 'service':
+                return <Service />;
+            case 'kitchen':
+                return <Kitchen />;
             case 'qr-scanner':
                 return <QRScanner />;
             case 'users':

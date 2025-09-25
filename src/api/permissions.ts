@@ -20,6 +20,8 @@ export interface Permission {
   users: boolean;
   tickets: boolean;
   settings: boolean;
+  service: boolean;
+  kitchen: boolean;
 }
 
 export const rolePermissions: Record<UserRole, Permission> = {
@@ -35,6 +37,8 @@ export const rolePermissions: Record<UserRole, Permission> = {
     users: true,
     tickets: true,
     settings: true,
+    service: true,
+    kitchen: true,
   },
   ADMIN: {
     dashboard: true,
@@ -48,6 +52,8 @@ export const rolePermissions: Record<UserRole, Permission> = {
     users: true,
     tickets: true,
     settings: true,
+    service: true,
+    kitchen: true,
   },
   KITCHEN: {
     dashboard: true,
@@ -61,6 +67,8 @@ export const rolePermissions: Record<UserRole, Permission> = {
     users: false,
     tickets: true,
     settings: false,
+    service: false,
+    kitchen: true,
   },
   SERVICE: {
     dashboard: false,
@@ -74,6 +82,8 @@ export const rolePermissions: Record<UserRole, Permission> = {
     users: false,
     tickets: true,
     settings: false,
+    service: true,
+    kitchen: false,
   },
   USER: {
     dashboard: false,
@@ -87,6 +97,8 @@ export const rolePermissions: Record<UserRole, Permission> = {
     users: false,
     tickets: false,
     settings: false,
+    service: false,
+    kitchen: false,
   },
 };
 

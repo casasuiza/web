@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Ticket, Users, Calendar, BarChart3, Settings, LogOut, X, BookIcon, Tag, Music, Percent, QrCode } from 'lucide-react';
+import { Plus, Ticket, Users, Calendar, BarChart3, Settings, LogOut, X, BookIcon, Tag, Music, Percent, QrCode, UtensilsCrossed, Coffee } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../api/auth';
 import { useAuth } from '../../Auth/context/AuthContext';
@@ -22,6 +22,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onCl
         { id: 'categories', label: 'Gestionar Categorías', icon: Tag, permission: 'categories' as const },
         { id: 'artists', label: 'Artistas', icon: Music, permission: 'artists' as const },
         { id: 'coupons', label: 'Cupones', icon: Percent, permission: 'coupons' as const },
+        { id: 'service', label: 'Servicio', icon: Coffee, permission: 'service' as const },
+        { id: 'kitchen', label: 'Cocina', icon: UtensilsCrossed, permission: 'kitchen' as const },
         { id: 'qr-scanner', label: 'Scanner QR', icon: QrCode, permission: 'qrScanner' as const },
         { id: 'reports', label: 'Reportes', icon: BookIcon, permission: 'reports' as const },
         { id: 'users', label: 'Usuarios', icon: Users, permission: 'users' as const },
