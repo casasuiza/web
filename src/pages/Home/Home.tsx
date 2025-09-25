@@ -10,7 +10,6 @@ import type { EventData } from "../../api/events";
 
 export default function Home() {
   const [events, setEvents] = useState<EventData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Estado para controlar modal y evento seleccionado
@@ -40,8 +39,6 @@ export default function Home() {
         } else {
           setError("Error al cargar eventos");
         }
-      } finally {
-        setLoading(false);
       }
     }
     fetchEvents();
@@ -54,8 +51,6 @@ export default function Home() {
   const handleCloseModal = () => {
     setSelectedEvent(null);
   };
-
-  if (loading) return <p className="text-center mt-8">Cargando eventos...</p>;
 
   const dummyEvent: EventData = {
     id: "dummy-1",
